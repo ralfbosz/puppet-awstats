@@ -1,0 +1,8 @@
+---
+awstats::package_name: 'awstats'
+awstats::config_dir_path: '/etc/awstats'
+awstats::default_template: "%{module_name}/awstats.conf.erb"
+awstats::owner: 'root'
+awstats::group: 'root'
+awstats::config_dir_purge: false
+awstats::enable_plugins: ~
