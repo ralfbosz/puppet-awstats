@@ -31,6 +31,18 @@ matrix:
     -
       env: PUPPET_GEM_VERSION="~> 4.0" CHECK=spec
       rvm: 2.1.9
+    - rvm: 2.4.1
+      sudo: required
+      services: docker
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/centos-6
+      script: bundle exec rake beaker
+      bundler_args: --with acceptance
+    - rvm: 2.4.1
+      sudo: required
+      services: docker
+      env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_set=docker/centos-7 DEPLOY_TO_FORGE=yes
+      script: bundle exec rake beaker
+      bundler_args: --with acceptance
 branches:
   only:
     - master
