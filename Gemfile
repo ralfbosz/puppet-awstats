@@ -35,6 +35,15 @@ group :development do
   gem 'kpn-style'
 end
 
+group :acceptance do
+  gem 'fog', '>= 1.25.0'
+  gem 'beaker', '3.29.0' if RUBY_VERSION >= '2.3.0'
+  gem 'beaker-puppet_install_helper'
+  gem 'beaker-rspec'
+  gem 'serverspec', '>= 2.0.0'
+  gem 'beaker-testmode_switcher'
+end
+
 puppet_version = ENV['PUPPET_GEM_VERSION']
 puppet_type = gem_type(puppet_version)
 facter_version = ENV['FACTER_GEM_VERSION']
