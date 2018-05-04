@@ -5,7 +5,7 @@ describe 'awstats class' do
   hostname = fact 'hostname'
 
   describe 'running puppet code' do
-    pp = <<-EOS
+    pp = <<-PP
       if $::osfamily == 'RedHat' {
         class { '::epel': } -> Class['::awstats']
       }
@@ -52,65 +52,60 @@ describe 'awstats class' do
           'SiteDomain'        => 'tweaked.example.org',
         },
       }
-    EOS
+    PP
 
     it 'applies the manifest twice with no stderr' do
-      apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
     end
   end
-
 
   [
     'awstats',
     'perl-Geo-IP',
-    'perl-URI'
+    'perl-URI',
   ].each do |package_name|
     describe package(package_name) do
-      it { should be_installed }
+      it { is_expected.to be_installed }
     end
   end
 
   describe file('/etc/awstats') do
-    it { should be_directory }
-    it { should be_owned_by 'root' }
-    it { should be_grouped_into 'root' }
-    it { should be_mode 755 }
+    it { is_expected.to be_directory }
+    it { is_expected.to be_owned_by 'root' }
+    it { is_expected.to be_grouped_into 'root' }
+    it { is_expected.to be_mode 755 }
   end
 
   describe file('/etc/awstats/awstats.defaults.example.org.conf') do
-    it { should be_file }
-    it { should be_owned_by 'root' }
-    it { should be_grouped_into 'root' }
-    it { should be_mode 644 }
+    it { is_expected.to be_file }
+    it { is_expected.to be_owned_by 'root' }
+    it { is_expected.to be_grouped_into 'root' }
+    it { is_expected.to be_mode 644 }
     its(:content) do
-      should match <<-eos
-DirData="/var/lib/awstats"
-HostAliases="localhost 127.0.0.1 #{hostname}"
-LogFile="/var/log/httpd/access_log"
-LogFormat=1
-SiteDomain="#{fqdn}"
-      eos
+      is_expected.to contain('DirData="/var/lib/awstats"')
+      is_expected.to contain("HostAliases=\"localhost 127.0.0.1 #{hostname}\"")
+      is_expected.to contain('LogFile="/var/log/httpd/access_log"')
+      is_expected.to contain('LogFormat=1')
+      is_expected.to contain("SiteDomain=\"#{fqdn}\"")
     end
   end
 
   describe file('/etc/awstats/awstats.tweaked.example.org.conf') do
-    it { should be_file }
-    it { should be_owned_by 'root' }
-    it { should be_grouped_into 'root' }
-    it { should be_mode 644 }
+    it { is_expected.to be_file }
+    it { is_expected.to be_owned_by 'root' }
+    it { is_expected.to be_grouped_into 'root' }
+    it { is_expected.to be_mode 644 }
     its(:content) do
-      should match <<-eos
-AllowFullYearView=2
-DNSLookup=1
-DirData="/var/lib/awstats"
-HostAliases="localhost 127.0.0.1 #{hostname}"
-LoadPlugin="decodeutfkeys"
-LoadPlugin="geoip"
-LogFile="/var/log/httpd/access_log"
-LogFormat=1
-SiteDomain="tweaked.example.org"
-      eos
+      is_expected.to contain('AllowFullYearView=2')
+      is_expected.to contain('DNSLookup=1')
+      is_expected.to contain('DirData="/var/lib/awstats"')
+      is_expected.to contain("HostAliases=\"localhost 127.0.0.1 #{hostname}\"")
+      is_expected.to contain('LoadPlugin="decodeutfkeys"')
+      is_expected.to contain('LoadPlugin="geoip"')
+      is_expected.to contain('LogFile="/var/log/httpd/access_log"')
+      is_expected.to contain('LogFormat=1')
+      is_expexted.to contain('SiteDomain="tweaked.example.org"')
     end
   end
 end
